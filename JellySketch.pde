@@ -25,6 +25,7 @@ void setup() {
   shapes.add(shapeRect(-width, height-60, 3.0*width, height, 9999999.0f, 10).makeStatic());
   shapes.add(shapeRect(-width, height/9.0, width, height, 9999999.0f, 10).makeStatic());
   shapes.add(shapeRect(width, height/9.0, width, height, 9999999.0f, 10).makeStatic());
+  check[3] = true;
 }
 
 void mouseScroll(float amount) { zoom += amount; }
@@ -36,7 +37,7 @@ float mouseXw, mouseYw;
 Shape locked = null;
 
 boolean mouseJustPressed, mouseJustReleased;
-boolean[] check = new boolean[3];
+boolean[] check = new boolean[4];
 
 ArrayList<Shape> arr = new ArrayList<>();
 void mousePressed() {
@@ -73,7 +74,7 @@ void draw() {
   mouseXw -= translation.x; mouseYw -= translation.y;
   
   if (mousePressed && mode==0) translation.add((mouseX-pmouseX)/exp(zoom), (mouseY-pmouseY)/exp(zoom));
-  if (locked != null) {
+  if (locked != null && !check[3]) {
     PVector TM = new PVector(0,0);
     for (var point : locked.points) {
       TM.set(mouseXw, mouseYw);
@@ -82,6 +83,7 @@ void draw() {
     }
   }
   
+  if (!check[3]) {
   for (int sn = 0; sn < SN; sn++) {
   shapes.forEach(Shape::update);
   shapes.forEach(Shape::calcBoundingBox);
@@ -166,6 +168,7 @@ void draw() {
     }
   }
   }
+  }
   
   
   translate(width/2.0, height/2.0);
@@ -195,7 +198,7 @@ void draw() {
     case (2): info = "Repulse";        break;
     case (3): info = "Click and drag"; break;
     case (4): info = "Place ball";     break;
-    case (5): info = "Place square";     break;
+    case (5): info = "Place square";   break;
   }
   if (mode == 0) info = "Pan and zoom";
   text(String.format("Input Mode (Press Space to cycle): %d (%s)", mode, info), 20, 20+24*1);
@@ -207,6 +210,7 @@ void draw() {
   check[0] = button("Meshes", width-260, 60, check[0]);
   check[1] = button("Springs", width-260, 85, check[1]);
   check[2] = button("Bounding Boxes", width-260, 110, check[2]);
+  check[3] = button("Pause", width-260, 135, check[3]);
   
   mouseJustPressed = false; mouseJustReleased = false;
 }
