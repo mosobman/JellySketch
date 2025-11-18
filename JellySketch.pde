@@ -9,6 +9,8 @@ void keyPressed() { mode = (mode+1) % 6; }
 void settings() {
   size(1080, 720, P3D);
   //fullScreen(P3D);
+  //BUG// On my laptop, when setting the system scale to 125% (non 100%)
+  // The full screen window doesnt actually cover the entire screen
   smooth(8);
 }
 
@@ -17,7 +19,8 @@ void setup() {
   translation.set(-width/2.0, -height/2.0);
   font = createFont("Consolas", 24.0f, true); // "https://github.com/notofonts/noto-fonts/raw/main/hinted/ttf/NotoSansMono/NotoSansMono-Regular.ttf" is a good font
   
-  shapes.add(shapeCircle(16, width/2.0, 0.0, 60.0, 5.0f));
+  shapes.add(shapeCircle(16, width/3.0, 0.0, 60.0, 5.0f));
+  shapes.add(shapeCube(16, 2.0*width/3.0, 0.0, 2.0*60.0, 5.0f));
   
   shapes.add(shapeRect(-width, height-60, 3.0*width, height, 9999999.0f, 10).makeStatic());
   shapes.add(shapeRect(-width, height/9.0, width, height, 9999999.0f, 10).makeStatic());
@@ -26,7 +29,7 @@ void setup() {
 
 void mouseScroll(float amount) { zoom += amount; }
 void mouseWheel(processing.event.MouseEvent e) {
-  if (e.getCount()!=0 && mode==0) mouseScroll(e.getCount()/10.0f);
+  if (e.getCount()!=0 && mode==0) mouseScroll(-e.getCount()/10.0f);
 }
 
 float mouseXw, mouseYw;
@@ -41,7 +44,7 @@ void mousePressed() {
   if (mode==3) {
     arr.clear();
     for (var shape : shapes) {
-      if (shape.pointInBBox(mouseXw,mouseYw)) {
+      if (!shape.static_ && shape.pointInBBox(mouseXw,mouseYw)) {
         arr.add(shape);
       }
     }

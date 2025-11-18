@@ -12,7 +12,7 @@ Shape shapeCircle(int I, float X, float Y, float S, float mass) {
   }
   neww.completeSprings();
   neww.smooth = true;
-  neww.stiffness *= 3.0;
+  neww.stiffness *= 1.0;
   return neww;
 }
 Shape shapeCube(int I, float X, float Y, float S, float mass) {
